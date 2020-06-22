@@ -2,6 +2,7 @@
 A service that manages a game that uses a leaderboard with players submitting new scores from around the world. I used NodeJS with Express framework and PostgreSQL database for this application.
 
 ## Running Locally
+To initialize NodeJS application run commands below:
 ```
 git clone https://github.com/aylingumus/leaderboard.git
 cd leaderboard
@@ -43,19 +44,19 @@ Sample Response:
     {
         "rank": 4,
         "points": "117",
-        "display_name": "gjg_5",
+        "display_name": "player_5",
         "country": "eu"
     },
     {
         "rank": 7,
-        "points": "0",
-        "display_name": "gjg_7",
+        "points": "10",
+        "display_name": "player_7",
         "country": "eu"
     },
     {
-        "rank": 7,
+        "rank": 8,
         "points": "0",
-        "display_name": "gjg_8",
+        "display_name": "player_8",
         "country": "eu"
     }
 ]
