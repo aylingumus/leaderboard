@@ -17,16 +17,14 @@ exports.getLeaderboardByCountry = (req, res) => {
 
 	pool.query('SELECT rank, points, display_name, country FROM leaderboard WHERE country = $1 ORDER BY rank ASC', [country], (error, data) => {
 		if (error) {
-			if (error.kind === "not_found") {
-				res.status(404).send({
-					message: `Not found any leaderboard data with country code ${req.params.country_iso_code}.`
-				});
-			}
-			else {
-				res.status(500).send({
-					message: "Error retrieving leaderboard data with country code " + req.params.country_iso_code
-				});
-			}
+			res.status(500).send({
+				message: `Error retrieving leaderboard data with country code ${req.params.country_iso_code}.`
+			});
+		}
+		else if (data.rowCount == 0) {
+			res.status(404).send({
+				message: `Not found any leaderboard data with country code ${req.params.country_iso_code}.`
+			});
 		}
 		else
 			res.status(200).json(data.rows);
@@ -58,16 +56,14 @@ exports.getUserByGUID = (req, res) => {
 
 	pool.query('SELECT user_id, display_name, points, rank FROM leaderboard WHERE user_id = $1', [user_id], (error, data) => {
 		if (error) {
-			if (error.kind === "not_found") {
-				res.status(404).send({
-					message: `Not found any user with GUID ${req.params.user_id}.`
-				});
-			}
-			else {
-				res.status(500).send({
-					message: "Error retrieving user with GUID " + req.params.user_id
-				});
-			}
+			res.status(500).send({
+				message: `Error retrieving user with GUID ${req.params.user_id}.`
+			});
+		}
+		else if (data.rowCount == 0) {
+			res.status(404).send({
+				message: `Not found any user with GUID ${req.params.user_id}.`
+			});
 		}
 		else
 			res.status(200).json(data.rows[0]);
@@ -86,16 +82,14 @@ exports.submitScore = (req, res) => {
 
   pool.query("with rows as (UPDATE leaderboard SET points = (select points + $1 from leaderboard where user_id=$2), timestamp = to_timestamp($3/ 1000.0) WHERE leaderboard.user_id = $2 RETURNING user_id, timestamp) SELECT $1 as score_worth, user_id, (EXTRACT(EPOCH FROM timestamp)) as timestamp from rows", [score_worth, user_id, Date.now()], (error, data) => {
 		if (error) {
-			if (error.kind === "not_found") {
-				res.status(404).send({
-					message: `Not found user with user_id ${req.body.user_id}.`
-				});
-			}
-			else {
-				res.status(500).send({
-					message: "Error updating user with user_id " + req.body.user_id
-				});
-			}
+			res.status(500).send({
+				message: `Error updating user with user_id ${req.body.user_id}.`
+			});
+		}
+		else if (data.rowCount == 0) {
+			res.status(404).send({
+				message: `Not found user with user_id ${req.body.user_id}.`
+			});
 		}
 		else {
 			updateAllRanks();

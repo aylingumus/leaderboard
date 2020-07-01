@@ -74,6 +74,14 @@ Sample Response:
 ```
 
 <b>POST /user/create:</b> You can create a new user. New user will be ranked as the last automatically.<br />
+Sample Request:
+```
+{
+	"display_name": "player2",
+	"country": "tr"
+}
+```
+
 Sample Response:
 ```
 {
@@ -85,6 +93,14 @@ Sample Response:
 ```
 
 <b>POST /score/submit:</b> You can submit a score worth for an existing user. This score submission affects the rank orders.<br />
+Sample Request:
+```
+{
+	"score_worth": 15,
+	"user_id": "a666c433-666c-498e-9539-200d54917666"
+}
+```
+
 Sample Response:
 ```
 {

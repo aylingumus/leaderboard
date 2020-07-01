@@ -14,7 +14,7 @@ describe('Leaderboard', function() {
 					.end((err, res) => {
 									res.should.have.status(200);
 									res.body.should.be.a('array');
-									//res.body.length.should.be.eql(9);
+									res.body.length.should.be.above(0);
 							done();
 					});
 			});
@@ -28,12 +28,23 @@ describe('Leaderboard', function() {
 				.end((err, res) => {
 							res.should.have.status(200);
 							res.body.should.be.a('array');
-							//res.body.length.should.be.eql(3);
+							res.body.length.should.be.above(0);
+					done();
+				});
+		 });
+
+		 it('it should check the leaderboard for given country which is not exist in the records', (done) => {
+			let country_iso_code = "none";
+			chai.request(server)
+				.get('/leaderboard/' + country_iso_code)
+				.end((err, res) => {
+						res.should.have.status(404);
+						res.body.should.have.property('message');
+						res.body.should.have.property('message').eql(`Not found any leaderboard data with country code ${country_iso_code}.`);
 					done();
 				});
 		 });
 	});
-
 
 	describe('/POST score/submit', () => {
 		it('it should UPDATE a score given the score_worth and user_id', (done) => {
@@ -49,6 +60,19 @@ describe('Leaderboard', function() {
 								res.body.should.all.have.property('timestamp');
 						done();
 					});
+			});
+		
+		it('it should NOT UPDATE a score when score_worth and user_id are not given', (done) => {
+			let score = {score_worth: null, user_id: null}
+			chai.request(server)
+				.post('/score/submit/')
+				.send(score)
+				.end((err, res) => {
+						res.should.have.status(404);
+						res.body.should.have.property('message');
+						res.body.should.have.property('message').eql(`Not found user with user_id ${score.user_id}.`);
+					done();
+				});
 			});
 	});
 

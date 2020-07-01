@@ -22,10 +22,22 @@ describe('Users', function() {
 					done();
 				});
 		 });
+
+		 it('it should NOT GET user data if any user GUID is not given', (done) => {
+			let user_guid = null;
+			chai.request(server)
+				.get('/user/profile/' + user_guid)
+				.end((err, res) => {
+						res.should.have.status(500);
+						res.body.should.have.property('message');
+						res.body.should.have.property('message').eql(`Error retrieving user with GUID ${user_guid}.`);
+					done();
+				});
+			});
 	});
 
 	describe('/POST user/create', () => {
-		it('it should POST a user ', (done) => {
+		it('it should POST a user', (done) => {
 				let user = {
 						display_name: "player3",
 						country: "eu"
@@ -43,5 +55,21 @@ describe('Users', function() {
 						done();
 					});
 			});
+
+			it('it should NOT POST a user when display_name and country is not given', (done) => {
+				let user = {
+					display_name: null,
+					country: null
+				}
+					chai.request(server)
+						.post('/user/create')
+						.send(user)
+						.end((err, res) => {
+								res.should.have.status(500);
+								res.body.should.have.property('message');
+								res.body.should.have.property('message').eql(res.body.message || "Some error occurred while creating the user.");
+							done();
+						});
+				});
 	});
 }); 
